@@ -12,7 +12,7 @@ jobs:
       - name: Connect to Tailscale
         uses: tailscale/github-action@v2
         with:
-          authkey: "tskey-auth-kMSXdxDEPB21CNTRL-y2MM711nqYRsgXxT4mvjZRvi8i57tquv" 
+          authkey: "tskey-auth-k65vTNPLK411CNTRL-piGsWDtM8geLfd7wQB7DfeFeXjHHdNPj" 
 
       - name: Setup Access
         run: |
