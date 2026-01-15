@@ -1,35 +1,25 @@
-name: Windows-11-RDP-Tailscale
-
-on: 
+name: Tailscale Linux
+on:
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Connect to Tailscale
         uses: tailscale/github-action@v2
         with:
-          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+          authkey: "tskey-auth-k4jcqp31oW11CNTRL-WEaEb6qrHuZ6w9u9nUsztZ2EmS3c6TZN"
 
-      - name: Setup RDP Access
+      - name: Setup Access
         run: |
-          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -Value 0
-          Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
-          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
-          
-          $Password = ConvertTo-SecureString "Pass123456@@" -AsPlainText -Force
-          New-LocalUser "AdminRDP" -Password $Password -Description "RDP User"
-          Add-LocalGroupMember -Group "Remote Desktop Users" -Member "AdminRDP"
-          Add-LocalGroupMember -Group "Administrators" -Member "AdminRDP"
+          sudo apt-get update
+          sudo apt-get install -y xrdp
+          echo "runner:password123" | sudo chpasswd
+          sudo systemctl start xrdp
 
       - name: Keep Alive
-        run: |
-          Write-Host "RDP is Ready!"
-          Write-Host "Connect using the Tailscale IP of this runner."
-          $i = 360
-          do {
-            Write-Host "Remaining time: $i minutes"
-            Start-Sleep -Seconds 60
-            $i--
-          } while ($i -gt 0)
+        run: sleep 21600
